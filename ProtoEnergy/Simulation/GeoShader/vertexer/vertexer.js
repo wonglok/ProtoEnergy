@@ -29,12 +29,14 @@ export const makeAPI = ({ renderer, scene }) => {
   var velVar = gpuCompute.addVariable('tVel', require('raw-loader!./tVel.glowing.frag').default, velDynamic );
   velVar.material.uniforms.tIdx = { value: posIdx };
   velVar.material.uniforms.time = { value: 0 };
-  gpuCompute.setVariableDependencies( velVar, [ velVar ] );
+
 
   var posVar = gpuCompute.addVariable('tPos', require('raw-loader!./tPos.glowing.frag').default, posDynamic );
   posVar.material.uniforms.tIdx = { value: posIdx };
   posVar.material.uniforms.time = { value: 0 };
+
   gpuCompute.setVariableDependencies( posVar, [ posVar, velVar ] );
+  gpuCompute.setVariableDependencies( velVar, [ posVar, velVar ] );
 
   var error = gpuCompute.init();
   if (error !== null) {

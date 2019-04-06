@@ -130,9 +130,9 @@ void main ()	{
   float piz = 0.01 * 2.0 * 3.14159265;
 
   pos.xyz = rotateQ(normalize(vec3(1.0, 1.0, 1.0)), time + pY * piz) * rotateZ(time + pY * piz) * pos.xyz;
-  pos.z += sin(time  + pX * piz * 0.333) * 50.0;
+  // pos.z += sin(time  + pX * piz * 0.333) * 50.0;
 
-  // pos.xyz += vel.xyz * 100.0;
+  pos.xyz += vel.xyz;
 
   if (isInvalid) {
     pos.w = 0.0;

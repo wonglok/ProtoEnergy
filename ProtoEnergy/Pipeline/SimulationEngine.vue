@@ -91,7 +91,7 @@ export default {
 
   },
   mounted () {
-    // this.startGame()
+    this.startGame('vertexer')
   },
   watch: {
   },
