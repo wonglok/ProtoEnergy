@@ -1,0 +1,22 @@
+{
+  "name": "protoenergy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "imports-loader": "^0.8.0",
+    "oimo": "^1.0.9",
+    "three": "^0.103.0"
+  },
+  "devDependencies": {
+    "eslint-plugin-vue": "^5.2.2",
+    "raw-loader": "^2.0.0"
+  },
+  "scripts": {
+    "dev": "vue serve",
+    "build": "vue build",
+    "deploy": "netlify "
+  },
+  "author": "",
+  "license": "ISC"
+}
