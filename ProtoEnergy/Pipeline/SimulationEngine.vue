@@ -2,10 +2,10 @@
   <div class="full u-layer-base">
     <Scene @ready="(v) => { scene = v; init() }" >
       <!-- <Box3></Box3> -->
-      <Object3D :position="{ x:0, y: 0, z: 0 }">
+      <Object3D v-if="gameReady === 'voicer'" :position="{ x:0, y: 0, z: 0 }">
         <SimSim :exec="execStack" :renderer="renderer" :scene="scene" :audio="audio" v-if="renderer && scene && audio" />
       </Object3D>
-      <Object3D :position="{ x:0, y: 160, z: 300 }">
+      <Object3D v-if="gameReady === 'vertexer'" :position="{ x:0, y: 0, z: 200 }">
         <GeoVert :exec="execStack" :renderer="renderer" :scene="scene" v-if="renderer && scene" />
       </Object3D>
 
@@ -17,7 +17,8 @@
     <div class="u-layer" v-if="!gameReady">
       <div class="u-center u-full">
         <div class="">
-          <button @click="startGame">Start Game</button>
+          <button @click="startGame('vertexer')">Start Vertexer</button>
+          <button @click="startGame('voicer')">Start Voicer</button>
         </div>
       </div>
     </div>
@@ -95,10 +96,10 @@ export default {
   watch: {
   },
   methods: {
-    startGame () {
+    startGame (gameReady) {
       this.setupAudio()
       this.$nextTick(() => {
-        this.gameReady = true
+        this.gameReady = gameReady
       })
     },
     init () {

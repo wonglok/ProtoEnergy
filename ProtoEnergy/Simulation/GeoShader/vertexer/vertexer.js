@@ -87,8 +87,3 @@ export const makeAPI = ({ renderer, scene }) => {
   }
   return api
 }
-
-// export const getAPI = ({ renderer, scene, camera, gui, CONFIG }) => {
-//   let api = makeAPI({ renderer, scene, camera, gui, CONFIG })
-//   return api
-// }
