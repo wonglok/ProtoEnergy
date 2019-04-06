@@ -13,9 +13,13 @@
     "raw-loader": "^2.0.0"
   },
   "scripts": {
+    "github": "git add .; git commit -am \"github backup\"; git push -u origin master",
+    "deploy": "npm run github; npm run build; npm run cp; npm run netlify;",
+    "netlify": "netlify deploy --dir=\"./dist\" --prod",
+    "cp": "cp _redirects ./dist/_redirects",
+
     "dev": "vue serve",
-    "build": "vue build",
-    "deploy": "netlify "
+    "build": "vue build"
   },
   "author": "",
   "license": "ISC"
