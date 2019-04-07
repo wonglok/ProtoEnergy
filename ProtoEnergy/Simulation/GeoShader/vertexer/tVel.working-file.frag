@@ -96,8 +96,8 @@ float constrain(float val, float min, float max) {
 
 vec3 getDiff (in vec3 lastPos, in vec3 mousePos) {
   vec3 diff = lastPos.xyz / 33.3 - mousePos;
-  float distance = constrain(length(diff), 5.0, 100.0);
-  float strength = 0.35 / (distance * distance);
+  float distance = constrain(length(diff), 20.0, 1000.0);
+  float strength = 5.35 / (distance * distance);
 
   diff = normalize(diff);
   // delta
@@ -141,7 +141,7 @@ void main ()	{
   vel.xyz += getDiff(pos.xyz, vec3(-mousePos.x, mousePos.y, mousePos.z));
 
   // vel.xyz += force.xyz;
-  // vel.z = 0.0;
+  vel.z = 0.0;
 
   if (state.x == 0.0) {
     vel.xyz = vec3(0.0);

@@ -172,12 +172,14 @@ void main ()	{
 
     vec4 offset = vec4(finalXYZ, 1.0) * 50.0;
 
-    float az = 0.0;
-    float el = 0.0;
-    vec3 virtualBall = vec3(offset.xyz);
-    toBall(virtualBall, az, el);
+    // float az = 0.0;
+    // float el = 0.0;
+    // vec3 virtualBall = vec3(offset.xyz);
+    // toBall(virtualBall, az, el);
     toPrimitive(plane, pos, squareVertexID, shouldSkipRendering);
-    pos.xyz += fromBall(50.0, az, el);
+    // pos.xyz += fromBall(50.0, az, el);
+
+    pos.xyz += offset.xyz;
   } else {
     pos.xyz += vel.xyz;
   }
