@@ -5,7 +5,7 @@
       <Object3D v-if="gameReady === 'voicer'" :position="{ x:0, y: 0, z: 0 }">
         <SimSim :exec="execStack" :renderer="renderer" :scene="scene" :audio="audio" v-if="renderer && scene && audio" />
       </Object3D>
-      <Object3D v-if="gameReady === 'vertexer'" :position="{ x:0, y: 0, z: 200 }">
+      <Object3D v-if="gameReady === 'vertexer'" :position="{ x:0, y: 0, z: 0 }">
         <GeoVert :exec="execStack" :renderer="renderer" :scene="scene" v-if="renderer && scene" />
       </Object3D>
 
@@ -18,7 +18,7 @@
       <div class="u-center u-full">
         <div class="">
           <button @click="startGame('vertexer')">Start Vertexer</button>
-          <button @click="startGame('voicer')">Start Voicer</button>
+          <button @click="startGame('voicer', true)">Start Voicer</button>
         </div>
       </div>
     </div>
@@ -62,6 +62,8 @@ export default {
   },
   data () {
     return {
+      mouse: { x: 0, y: 0, z: 0 },
+      rect: false,
       execStack: [],
       gameReady: false,
       audio: false,
@@ -91,13 +93,13 @@ export default {
 
   },
   mounted () {
-    // this.startGame('vertexer')
+    this.startGame('vertexer')
   },
   watch: {
   },
   methods: {
-    startGame (gameReady) {
-      this.setupAudio()
+    startGame (gameReady, audio) {
+      audio && this.setupAudio()
       this.$nextTick(() => {
         this.gameReady = gameReady
       })
@@ -163,6 +165,7 @@ export default {
     },
     getSizeInfo () {
       var rect = this.$refs['mounter'].getBoundingClientRect()
+      this.rect = rect
       this.size = {
         width: rect.width,
         height: rect.height,
@@ -182,6 +185,11 @@ export default {
       }
       sync()
       window.addEventListener('resize', sync, false)
+
+      this.$refs['mounter'].addEventListener('mousemove', (evt) => {
+        this.mouse.x = evt.pageX
+        this.mouse.y = evt.pageY
+      }, false)
     },
     stop () {
       window.cancelAnimationFrame(this.rAFID)
@@ -194,9 +202,9 @@ export default {
       this.rAFID = window.requestAnimationFrame(rAF)
     },
     render () {
-      let { scene, camera, renderer, composer } = this
+      let { scene, camera, renderer, composer, mouse, rect } = this
 
-      this.execStack.forEach(e => e())
+      this.execStack.forEach(e => e({ mouse, rect }))
 
       if (scene && camera && renderer && composer) {
         composer.render()

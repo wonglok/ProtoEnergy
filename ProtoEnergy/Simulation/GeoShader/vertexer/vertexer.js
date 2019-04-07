@@ -15,28 +15,36 @@ export const makeAPI = ({ renderer, scene }) => {
   for ( var j = 0; j < WIDTH; j ++ ) {
     for ( var i = 0; i < WIDTH; i ++ ) {
       let id = p / 4;
-      slot[p + 0] = id % 6; // slot idx
-      slot[p + 1] = Math.floor(id / 6); // vertex idx (plane square has two triangle = 6 vertex)
-      slot[p + 2] = Math.floor(WIDTH * WIDTH / 4.0 / 6.0); // total square
+      slot[p + 0] = id % 6; // square 1 / 6 index
+      slot[p + 1] = Math.floor(id / 6); // square
+      slot[p + 2] = (WIDTH * WIDTH) / 6.0; // total
       slot[p + 3] = id;
       p += 4;
     }
   }
 
+  var stateDynamic = gpuCompute.createTexture();
   var velDynamic = gpuCompute.createTexture();
   var posDynamic = gpuCompute.createTexture();
 
-  var velVar = gpuCompute.addVariable('tVel', require('raw-loader!./tVel.glowing.frag').default, velDynamic );
+  var stateVar = gpuCompute.addVariable('tState', require('raw-loader!./tState.working-file.frag').default, stateDynamic );
+  stateVar.material.uniforms.tIdx = { value: posIdx };
+  stateVar.material.uniforms.time = { value: 0 };
+  stateVar.material.uniforms.mousePos = { value: new THREE.Vector3() }
+
+  var velVar = gpuCompute.addVariable('tVel', require('raw-loader!./tVel.working-file.frag').default, velDynamic );
   velVar.material.uniforms.tIdx = { value: posIdx };
   velVar.material.uniforms.time = { value: 0 };
+  velVar.material.uniforms.mousePos = { value: new THREE.Vector3() }
 
-
-  var posVar = gpuCompute.addVariable('tPos', require('raw-loader!./tPos.glowing.frag').default, posDynamic );
+  var posVar = gpuCompute.addVariable('tPos', require('raw-loader!./tPos.working-file.frag').default, posDynamic );
   posVar.material.uniforms.tIdx = { value: posIdx };
   posVar.material.uniforms.time = { value: 0 };
+  posVar.material.uniforms.mousePos = { value: new THREE.Vector3() }
 
-  gpuCompute.setVariableDependencies( posVar, [ posVar, velVar ] );
-  gpuCompute.setVariableDependencies( velVar, [ posVar, velVar ] );
+  gpuCompute.setVariableDependencies( stateVar, [ stateVar, posVar, velVar ] );
+  gpuCompute.setVariableDependencies( velVar, [ stateVar, posVar, velVar ] );
+  gpuCompute.setVariableDependencies( posVar, [ stateVar, posVar, velVar ] );
 
   var error = gpuCompute.init();
   if (error !== null) {
@@ -80,11 +88,34 @@ export const makeAPI = ({ renderer, scene }) => {
   var mesh = new THREE.Mesh(geo, material)
   scene.add(mesh)
 
+  api.setMouse = ({ mX, mY, rect }) => {
+    var stateMouse = stateVar.material.uniforms.mousePos.value
+    var posMouse = velVar.material.uniforms.mousePos.value
+    var velMouse = posVar.material.uniforms.mousePos.value
+    if (rect && typeof mX !== 'undefined' && typeof mY !== 'undefined') {
+      velMouse.x = ((mX - rect.left) / rect.width) * 2 - 1
+      velMouse.y = -((mY - rect.top) / rect.height) * 2 + 1
+      posMouse.x = ((mX - rect.left) / rect.width) * 2 - 1
+      posMouse.y = -((mY - rect.top) / rect.height) * 2 + 1
+
+      stateMouse.x = ((mX - rect.left) / rect.width) * 2 - 1
+      stateMouse.y = -((mY - rect.top) / rect.height) * 2 + 1
+
+      stateMouse.y *= rect.width / rect.height
+      velMouse.y *= rect.width / rect.height
+      posMouse.y *= rect.width / rect.height
+      // console.log(mouse)
+    }
+  }
+
   api.render = () => {
-    posVar.material.uniforms.time.value = window.performance.now() * 0.001
-    velVar.material.uniforms.time.value = window.performance.now() * 0.001
+    let time = window.performance.now() * 0.001
+    stateVar.material.uniforms.time.value = time
+    posVar.material.uniforms.time.value = time
+    velVar.material.uniforms.time.value = time
+
     uniforms.tPos.value = gpuCompute.getCurrentRenderTarget(posVar).texture
-    uniforms.time.value = window.performance.now() * 0.001
+    uniforms.time.value = time
     gpuCompute.compute()
   }
   return api

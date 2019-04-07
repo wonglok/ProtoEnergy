@@ -51,6 +51,8 @@ mat3 rotateQ (vec3 axis, float rad) {
     );
 }
 
+uniform vec3 mousePos;
+
 void main ()	{
   vec2 cellSize = 1.0 / resolution.xy;
   vec2 newCell = gl_FragCoord.xy;
@@ -59,39 +61,19 @@ void main ()	{
 
   bool isInvalid = false;
 
-  vec4 vel = texture2D(tVel, uv);
-  vec4 pos = texture2D(tPos, uv);
+  vec4 state = texture2D(tState, uv);
+  // vec4 pos = texture2D(tPos, uv);
+  // vec4 vel = texture2D(tVel, uv);
 
-  float vertexIDX = idx.x;
-  float squareIDX = idx.y;
-  float totalPoints = idx.z;
-
-  float lineNums = 500.0;
-  float stackIDX = floor(squareIDX / lineNums);
-  float lineIDX = mod(squareIDX, lineNums);
-
-  if (lineIDX > 300.0) {
-    isInvalid = true;
-  }
-  if (stackIDX > 300.0) {
-    isInvalid = true;
-  }
-  if (isInvalid) {
-    discard;
-    return;
-  }
-
-  float piz = 0.01 * 2.0 * 3.14159265;
-
-  vel.x = 10.0 * sin(0.01 * vel.x + 0.01 * pos.x + time + lineIDX * piz);
-  vel.y = 10.0 * cos(0.01 * vel.y + 0.01 * pos.y + time + lineIDX * piz);
+  float fps = (1.0 / 3.0) * 1.0 / 60.0;
+  state.xyz += vec3(fps);
 
   if (isInvalid) {
-    vel.w = 0.0;
+    state.w = 0.0;
     discard;
   } else {
-    vel.w = 1.0;
-    gl_FragColor = vel;
+    state.w = 1.0;
+    gl_FragColor = state;
   }
 
 }

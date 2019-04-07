@@ -36,8 +36,11 @@ export default {
   },
   mounted () {
     if (this.exec) {
-      let fnc = () => {
-        this.api && this.api.render({})
+      let fnc = ({ mouse, rect }) => {
+        if (this.api) {
+          this.api.render({})
+          this.api.setMouse({ mX: mouse.x, mY: mouse.y, rect: rect })
+        }
       }
       this.exec.push(fnc)
       this.cleaner = () => {
