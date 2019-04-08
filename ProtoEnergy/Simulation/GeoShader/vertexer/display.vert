@@ -17,4 +17,5 @@ void main() {
   vec4 outputPos = projectionMatrix * mvPosition;
 
   gl_Position = outputPos;
+  gl_PointSize = 1.0;
 }

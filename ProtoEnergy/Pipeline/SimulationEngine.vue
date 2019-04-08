@@ -77,7 +77,7 @@ export default {
       readyInit: false,
       world: false,
       Settings: {
-        camPosition: {'x':0,'y':0,'z':-130.28470041153204},
+        camPosition: {'x':0,'y':0,'z':-800.28470041153204},
         bloomPass: {
           threshold: 0.0846740050804403,
           strength: 0.9551227773073666,

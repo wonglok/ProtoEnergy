@@ -178,9 +178,7 @@ void main ()	{
     pos.xyz += fromBall(150.0, az, el);
     // pos.xyz += vec3(offset);
   } else {
-    // ---------
     float mode = 2.0;
-
     if (mode == 0.0) {
       vec3 mpos = pos.xyz / 350.0 * 3.14159264 * 2.0;
       vec4 vel = texture2D(tVel, uv);
@@ -200,7 +198,7 @@ void main ()	{
       float az = 0.0;
       float el = 0.0;
       toBall(virtualBall, az, el);
-      pos.xyz = fromBall(150.0, az, el);
+      pos.xyz = fromBall(300.0, az, el);
     } else if (mode == 1.0) {
       vec3 mpos = pos.xyz / 350.0 * 3.14159264 * 2.0;
 
