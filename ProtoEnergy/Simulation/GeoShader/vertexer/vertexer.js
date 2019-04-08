@@ -5,7 +5,7 @@ import GPUComputationRenderer from '../GPGPU.js'
 /* eslint-enable */
 export const makeAPI = ({ renderer, scene }) => {
   var api = {}
-  var WIDTH = 512;
+  var WIDTH = window.innerWidth >= 1024 ? 1024 : 256;
   var gpuCompute = new GPUComputationRenderer(WIDTH, WIDTH, renderer)
 
   // pos IDX
