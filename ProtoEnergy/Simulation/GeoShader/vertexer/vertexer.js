@@ -5,7 +5,7 @@ import GPUComputationRenderer from '../GPGPU.js'
 /* eslint-enable */
 export const makeAPI = ({ renderer, scene }) => {
   var api = {}
-  var WIDTH = 1024;
+  var WIDTH = 512;
   var gpuCompute = new GPUComputationRenderer(WIDTH, WIDTH, renderer)
 
   // pos IDX
@@ -24,8 +24,7 @@ export const makeAPI = ({ renderer, scene }) => {
     }
   }
 
-  var stateDynamic = gpuCompute.createTexture();
-  var velDynamic = gpuCompute.createTexture();
+  // var velDynamic = gpuCompute.createTexture();
   var posDynamic = gpuCompute.createTexture();
 
   // var stateVar = gpuCompute.addVariable('tState', require('raw-loader!./tState.working-file.frag').default, stateDynamic );
@@ -33,11 +32,11 @@ export const makeAPI = ({ renderer, scene }) => {
   // stateVar.material.uniforms.time = { value: 0 };
   // stateVar.material.uniforms.mousePos = { value: new THREE.Vector3() }
 
-  var velVar = gpuCompute.addVariable('tVel', require('raw-loader!./tVel.working-file.frag').default, velDynamic );
-  velVar.material.uniforms.tIdx = { value: posIdx };
-  velVar.material.uniforms.time = { value: 0 };
-  velVar.material.uniforms.mousePos = { value: new THREE.Vector3() }
-  velVar.material.uniforms.screen = { value: new THREE.Vector3(window.innerWidth, window.innerHeight, 0.0) }
+  // var velVar = gpuCompute.addVariable('tVel', require('raw-loader!./tVel.working-file.frag').default, velDynamic );
+  // velVar.material.uniforms.tIdx = { value: posIdx };
+  // velVar.material.uniforms.time = { value: 0 };
+  // velVar.material.uniforms.mousePos = { value: new THREE.Vector3() }
+  // velVar.material.uniforms.screen = { value: new THREE.Vector3(window.innerWidth, window.innerHeight, 0.0) }
 
   var posVar = gpuCompute.addVariable('tPos', require('raw-loader!./tPos.working-file.frag').default, posDynamic );
   posVar.material.uniforms.tIdx = { value: posIdx };
@@ -46,8 +45,8 @@ export const makeAPI = ({ renderer, scene }) => {
   posVar.material.uniforms.screen = { value: new THREE.Vector3(window.innerWidth, window.innerHeight, 0.0) }
 
   // gpuCompute.setVariableDependencies( stateVar, [ stateVar, posVar, velVar ] );
-  gpuCompute.setVariableDependencies( velVar, [ posVar, velVar ] );
-  gpuCompute.setVariableDependencies( posVar, [ posVar, velVar ] );
+  // gpuCompute.setVariableDependencies( velVar, [ posVar ] );
+  gpuCompute.setVariableDependencies( posVar, [ posVar ] );
 
   var error = gpuCompute.init();
   if (error !== null) {
@@ -93,18 +92,18 @@ export const makeAPI = ({ renderer, scene }) => {
 
   api.setMouse = ({ mX, mY, rect }) => {
     // var stateMouse = stateVar.material.uniforms.mousePos.value
-    var posMouse = velVar.material.uniforms.mousePos.value
-    var velMouse = posVar.material.uniforms.mousePos.value
+    // var velMouse = velVar.material.uniforms.mousePos.value
+    var posMouse = posVar.material.uniforms.mousePos.value
     if (rect && typeof mX !== 'undefined' && typeof mY !== 'undefined') {
-      velMouse.x = ((mX - rect.left) / rect.width) * 2 - 1
-      velMouse.y = -((mY - rect.top) / rect.height) * 2 + 1
+      // velMouse.x = ((mX - rect.left) / rect.width) * 2 - 1
+      // velMouse.y = -((mY - rect.top) / rect.height) * 2 + 1
       posMouse.x = ((mX - rect.left) / rect.width) * 2 - 1
       posMouse.y = -((mY - rect.top) / rect.height) * 2 + 1
       // stateMouse.x = ((mX - rect.left) / rect.width) * 2 - 1
       // stateMouse.y = -((mY - rect.top) / rect.height) * 2 + 1
 
       // stateMouse.y *= rect.width / rect.height
-      velMouse.y *= rect.width / rect.height
+      // velMouse.y *= rect.width / rect.height
       posMouse.y *= rect.width / rect.height
       // console.log(mouse)
     }
@@ -114,7 +113,7 @@ export const makeAPI = ({ renderer, scene }) => {
     let time = window.performance.now() * 0.001
     // stateVar.material.uniforms.time.value = time
     posVar.material.uniforms.time.value = time
-    velVar.material.uniforms.time.value = time
+    // velVar.material.uniforms.time.value = time
 
     uniforms.tPos.value = gpuCompute.getCurrentRenderTarget(posVar).texture
     uniforms.time.value = time
