@@ -1,5 +1,5 @@
 #include <common>
-uniform sampler2D tPos;
+uniform highp sampler2D tPos;
 // uniform sampler2D tIdx;
 
 varying vec3 v_tt;
@@ -17,5 +17,5 @@ void main() {
   vec4 outputPos = projectionMatrix * mvPosition;
 
   gl_Position = outputPos;
-  gl_PointSize = 1.25;
+  gl_PointSize = 1.0;
 }

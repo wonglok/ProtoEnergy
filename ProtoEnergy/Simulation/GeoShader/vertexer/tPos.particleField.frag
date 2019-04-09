@@ -209,16 +209,6 @@ void main ()	{
       pos.xyz = rotateQ(normalize(mpos.xyz), time * 0.5) * pos.xyz;
 
       // pos.xyz = rotateX(time) * pos.xyz;
-    } else if (mode == 4.0) {
-      vec3 mpos = pos.xyz / 350.0 * 3.14159264 * 2.0;
-
-      pos.xyz = rotateX(mpos.x) * pos.xyz;
-      pos.xyz = rotateY(mpos.y) * pos.xyz;
-      pos.xyz = rotateZ(mpos.z) * pos.xyz;
-
-      pos.xyz += rand(uv) * 0.8;
-
-      pos.xyz = rotateQ(normalize(mpos.zyx), time * 0.65) * pos.xyz;
     }
   }
 
